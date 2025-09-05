@@ -42,7 +42,7 @@
 	import DateInput, { toISO } from './dateInput.vue';
 	import timeInput from './timeInput.vue';
 
-	import { shallowRef, watch } from 'vue';
+	import { onMounted, shallowRef, watch } from 'vue';
 	import { useDefaults } from "vuetify";
 	import { Density } from 'vuetify/lib/composables/density.mjs';
 	import { Variant } from 'vuetify/lib/composables/variant.mjs';
@@ -55,14 +55,15 @@
 	const defaults = useDefaults(props, 'DatetimeRangePicker');
 	const emit = defineEmits(["update:modelValue"]);
 
-	watch(() => props.modelValue, v => {
+	onMounted(() => {
+		const v = props.modelValue;
 		if(v[0]) {
 			startDate.value = v[0];
 			useStartTime.value = v[0].getHours() != 0 || v[0].getMinutes() != 0;
 			if(useStartTime.value) startTime.value = v[0];
 		}
 		if(v[1]) {
-			endTime.value = v[1];
+			endDate.value = v[1];
 			useEndTime.value = v[1].getHours() != 23 || v[1].getMinutes() != 59;
 			if(useEndTime.value) endTime.value = v[1];
 		}
