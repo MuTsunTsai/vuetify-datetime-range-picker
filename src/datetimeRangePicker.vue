@@ -42,32 +42,43 @@
 	import DateInput, { toISO } from './dateInput.vue';
 	import timeInput from './timeInput.vue';
 
-	import { onMounted, shallowRef, watch } from 'vue';
+	import { shallowRef, watch } from 'vue';
 	import { useDefaults } from "vuetify";
 	import { Density } from 'vuetify/lib/composables/density.mjs';
 	import { Variant } from 'vuetify/lib/composables/variant.mjs';
 
+	import type { ShallowRef } from 'vue';
+
+	type DateU = Date | undefined;
+	type ValueType = [DateU, DateU];
+
 	const props = defineProps<{
 		density?: Density;
 		variant?: Variant;
-		modelValue: [Date | undefined, Date | undefined]
+		modelValue: ValueType;
 	}>();
 	const defaults = useDefaults(props, 'DatetimeRangePicker');
 	const emit = defineEmits(["update:modelValue"]);
 
-	onMounted(() => {
-		const v = props.modelValue;
-		if(v[0]) {
-			startDate.value = v[0];
-			useStartTime.value = v[0].getHours() != 0 || v[0].getMinutes() != 0;
-			if(useStartTime.value) startTime.value = v[0];
+	let cacheResult: ValueType = [undefined, undefined];
+
+	const DEFAULT_START = new Date(2000, 0, 1, 0, 0);
+	const DEFAULT_END = new Date(2000, 0, 1, 23, 59);
+
+	watch(() => props.modelValue, v => {
+		if(v[0]?.getTime() != cacheResult[0]?.getTime()) {
+			read(v[0], startDate, useStartTime, startTime, DEFAULT_START);
 		}
-		if(v[1]) {
-			endDate.value = v[1];
-			useEndTime.value = v[1].getHours() != 23 || v[1].getMinutes() != 59;
-			if(useEndTime.value) endTime.value = v[1];
+		if(v[1]?.getTime() != cacheResult[1]?.getTime()) {
+			read(v[1], endDate, useEndTime, endTime, DEFAULT_END);
 		}
 	});
+
+	function read(v: DateU, date: ShallowRef<DateU>, use: ShallowRef<boolean>, time: ShallowRef<DateU>, def: Date) {
+		date.value = v;
+		use.value = v ? v.getHours() != def.getHours() || v.getMinutes() != def.getMinutes() : false;
+		time.value = use.value ? v : undefined;
+	}
 
 	const startDate = shallowRef<Date>();
 	const endDate = shallowRef<Date>();
@@ -78,11 +89,11 @@
 
 	watch(useStartTime, v => {
 		if(!v) startTime.value = undefined;
-		else if(startTime.value === undefined) startTime.value = new Date(2000, 0, 1, 0, 0);
+		else if(startTime.value === undefined) startTime.value = DEFAULT_START
 	});
 	watch(useEndTime, v => {
 		if(!v) endTime.value = undefined;
-		else if(endTime.value === undefined) endTime.value = new Date(2000, 0, 1, 23, 59);
+		else if(endTime.value === undefined) endTime.value = DEFAULT_END
 	});
 
 	function maxTime(): Date | undefined {
@@ -95,15 +106,16 @@
 	}
 
 	watch([startDate, endDate, startTime, endTime], () => {
-		emit("update:modelValue", [
+		cacheResult = [
 			combine(startDate.value, startTime.value, 0),
 			combine(endDate.value, endTime.value, 59),
-		]);
+		];
+		emit("update:modelValue", cacheResult);
 	});
 
 	function combine(d: Date | undefined, t: Date | undefined, second: number): Date | undefined {
 		if(!d) return undefined;
-		if(!t) t = second == 0 ? new Date(2000, 0, 1, 0, 0) : new Date(2000, 0, 1, 23, 59);
+		if(!t) t = second == 0 ? DEFAULT_START : DEFAULT_END;
 		return new Date(d.getFullYear(), d.getMonth(), d.getDate(), t.getHours(), t.getMinutes(), second, second == 0 ? 0 : 999);
 	}
 
