@@ -1,6 +1,6 @@
 {
 	"name": "@mutsuntsai/vuetify-datetime-range-picker",
-	"version": "1.0.0",
+	"version": "0.0.0",
 	"description": "Datetime range picker for Vuetify",
 	"exports": {
 		".": {
@@ -10,12 +10,21 @@
 		},
 		"./style": "./dist/index.css"
 	},
+	"main": "./dist/index.cjs",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "rslib build",
 		"dev": "rslib build --watch",
 		"storybook": "storybook dev"
 	},
 	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/MuTsunTsai/vuetify-datetime-range-picker"
+	},
 	"license": "MIT",
 	"author": "Mu-Tsun Tsai <don.m.t.tsai@gmail.com> (https://github.com/MuTsunTsai)",
 	"type": "module",
