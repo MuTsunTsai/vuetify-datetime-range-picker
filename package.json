@@ -29,12 +29,8 @@
 	"author": "Mu-Tsun Tsai <don.m.t.tsai@gmail.com> (https://github.com/MuTsunTsai)",
 	"type": "module",
 	"packageManager": "pnpm@10.15.0",
-	"dependencies": {
-		"@mdi/font": "^7.4.47",
-		"vue": "^3.5.21",
-		"vuetify": "^3.9.7"
-	},
 	"devDependencies": {
+		"@mdi/font": "^7.4.47",
 		"@microsoft/api-extractor": "^7.52.11",
 		"@rsbuild/core": "^1.5.3",
 		"@rsbuild/plugin-sass": "^1.4.0",
@@ -46,5 +42,9 @@
 		"storybook-vue3-rsbuild": "^2.1.0",
 		"vue-tsc": "^3.0.6",
 		"webpack-plugin-vuetify": "^3.1.2"
+	},
+	"peerDependencies": {
+		"vue": "^3.5.0",
+		"vuetify": "^3.7.0"
 	}
 }

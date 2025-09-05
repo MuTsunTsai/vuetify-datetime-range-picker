@@ -9,6 +9,8 @@ import { createVuetify } from "vuetify";
 import "vuetify/styles";
 import { zhHant } from "vuetify/locale";
 
+console.log(zhHant);
+
 import '@mdi/font/css/materialdesignicons.css';
 
 const vuetify = createVuetify({
