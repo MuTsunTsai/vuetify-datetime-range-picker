@@ -1,0 +1,4 @@
+node_modules/
+dist/
+.rslib/
+NOTE.md
