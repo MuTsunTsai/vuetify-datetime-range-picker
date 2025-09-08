@@ -1,7 +1,7 @@
 <template>
 	<v-mask-input v-click-outside="{ handler, include }" :label="label" v-model="text" :focused="menu || isFocused"
 				  @update:focused="onFocus" mask="iso-date" placeholder="yyyy-mm-dd" @change="onChange" return-masked-value
-				  hide-details="auto">
+				  hide-details="auto" :rules="rules" :validate-on="validateOn" :disabled="disabled">
 		<v-menu v-model="menu" activator="parent" :close-on-content-click="false" :open-on-click="false">
 			<v-card class="w-100 text-center">
 				<div class="d-inline-block">
@@ -34,10 +34,16 @@
 	import { shallowRef, useTemplateRef, watch } from 'vue';
 	import { VMaskInput } from 'vuetify/labs/VMaskInput';
 
+	export type RuleSetting = VMaskInput["rules"];
+	export type ValidateSetting = VMaskInput["validateOn"];
+
 	const props = defineProps<{
 		label?: string;
 		min?: Date;
 		max?: Date;
+		rules?: RuleSetting;
+		validateOn?: ValidateSetting;
+		disabled?: boolean;
 		modelValue?: Date;
 	}>();
 	const emit = defineEmits(["update:modelValue"]);

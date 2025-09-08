@@ -20,6 +20,7 @@ const meta: Meta<Component> = {
 		template: `<div><DatetimeRangePicker v-bind="args" v-model="args.modelValue" /><br><br>{{ args.modelValue }}</div>`,
 	}),
 	argTypes: {
+		"hideLabel": { control: { type: "boolean" } },
 		"density": { control: { type: "select" }, options: ["default", "comfortable", "compact"] },
 		"modelValue": { control: "object" },
 	} as ArgTypes,
@@ -33,6 +34,30 @@ export const defaultStory: Story = {
 	name: "Default look",
 	args: {
 		modelValue: [undefined, undefined],
+	}
+};
+
+export const noLabelStory: Story = {
+	name: "Hide label",
+	args: {
+		modelValue: [undefined, undefined],
+		hideLabel: true,
+	}
+};
+
+export const disabledStory: Story = {
+	name: "Disabled",
+	args: {
+		modelValue: [undefined, undefined],
+		disabled: true,
+	}
+};
+
+export const timeRequiredStory: Story = {
+	name: "TimeRequired",
+	args: {
+		modelValue: [undefined, undefined],
+		timeRequired: true,
 	}
 };
 

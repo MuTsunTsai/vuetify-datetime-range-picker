@@ -41,3 +41,11 @@ export const defaultStory: Story = {
 		modelValue: undefined,
 	},
 };
+
+export const suffixStory: Story = {
+	name: "Custom suffix",
+	args: {
+		modelValue: undefined,
+		suffix: ":00",
+	},
+};

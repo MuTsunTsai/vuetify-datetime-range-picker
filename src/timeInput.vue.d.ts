@@ -1,9 +1,13 @@
+import type { RuleSetting, ValidateSetting } from './dateInput.vue';
 type __VLS_Props = {
     label?: string;
     disabled?: boolean;
     min?: Date;
     max?: Date;
     suffix?: string;
+    offset?: string;
+    rules?: RuleSetting;
+    validateOn?: ValidateSetting;
     modelValue?: Date;
 };
 declare const _default: import("vue").DefineComponent<__VLS_Props, {}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {

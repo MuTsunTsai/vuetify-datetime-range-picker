@@ -9,7 +9,7 @@
 		"module": "ESNext",
 		"strict": true,
 		"declaration": true,
-		"noEmit": true,
+		// "noEmit": true,
 		"noImplicitAny": false,
 		"skipLibCheck": true,
 		"isolatedModules": true,

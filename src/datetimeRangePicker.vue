@@ -7,32 +7,38 @@
 	}">
 		<v-row align="baseline">
 			<v-col>
-				<date-input label="起日" v-model="startDate" :max="endDate" />
+				<date-input :rules="dateRules" :validate-on="validateOn" :label="hideLabel ? undefined : '起日'" v-model="startDate"
+							:max="endDate" :disabled="disabled" />
 			</v-col>
-			<v-col cols="auto" class="mr-n5 mr-sm-0">
-				<v-checkbox v-model="useStartTime" hide-details="auto">
+			<v-col cols="auto" class="mr-n5 mr-sm-0" v-if="!timeRequired">
+				<v-checkbox v-model="useStartTimeRaw" hide-details="auto" :disabled="disabled">
 					<template #label>
 						<span class="d-none d-sm-inline">自訂時間</span>
 					</template>
 				</v-checkbox>
 			</v-col>
 			<v-col>
-				<time-input label="起時" v-model="startTime" :max="maxTime()" :disabled="!useStartTime" suffix=":00" />
+				<time-input :rules="useStartTime ? timeRules : undefined" :validate-on="validateOn"
+							:label="hideLabel ? undefined : '起時'" v-model="startTime" :max="maxTime()"
+							:disabled="disabled || !useStartTime" suffix=":00" :offset="offset" />
 			</v-col>
 		</v-row>
 		<v-row>
 			<v-col>
-				<date-input label="迄日" v-model="endDate" :min="startDate" />
+				<date-input :rules="dateRules" :validate-on="validateOn" :label="hideLabel ? undefined : '迄日'" v-model="endDate"
+							:min="startDate" :disabled="disabled" />
 			</v-col>
-			<v-col cols="auto" class="mr-n5 mr-sm-0">
-				<v-checkbox label="" v-model="useEndTime" hide-details="auto">
+			<v-col cols="auto" class="mr-n5 mr-sm-0" v-if="!timeRequired">
+				<v-checkbox label="" v-model="useEndTimeRaw" hide-details="auto" :disabled="disabled">
 					<template #label>
 						<span class="d-none d-sm-inline">自訂時間</span>
 					</template>
 				</v-checkbox>
 			</v-col>
 			<v-col>
-				<time-input label="迄時" v-model="endTime" :min="minTime()" :disabled="!useEndTime" suffix=":59" />
+				<time-input :rules="useEndTime ? timeRules : undefined" :validate-on="validateOn"
+							:label="hideLabel ? undefined : '迄時'" v-model="endTime" :min="minTime()"
+							:disabled="disabled || !useEndTime" suffix=":59" :offset="offset" />
 			</v-col>
 		</v-row>
 	</v-defaults-provider>
@@ -42,11 +48,12 @@
 	import DateInput, { toISO } from './dateInput.vue';
 	import timeInput from './timeInput.vue';
 
-	import { shallowRef, watch } from 'vue';
+	import { computed, shallowRef, watch } from 'vue';
 	import { useDefaults } from "vuetify";
 	import { Density } from 'vuetify/lib/composables/density.mjs';
 	import { Variant } from 'vuetify/lib/composables/variant.mjs';
 
+	import type { RuleSetting, ValidateSetting } from "./dateInput.vue";
 	import type { ShallowRef } from 'vue';
 
 	type DateU = Date | undefined;
@@ -55,6 +62,13 @@
 	const props = defineProps<{
 		density?: Density;
 		variant?: Variant;
+		offset?: string;
+		hideLabel?: boolean;
+		timeRequired?: boolean;
+		dateRules?: RuleSetting;
+		timeRules?: RuleSetting;
+		validateOn?: ValidateSetting;
+		disabled?: boolean;
 		modelValue: ValueType;
 	}>();
 	const defaults = useDefaults(props, 'DatetimeRangePicker');
@@ -82,10 +96,13 @@
 
 	const startDate = shallowRef<Date>();
 	const endDate = shallowRef<Date>();
-	const useStartTime = shallowRef(false);
-	const useEndTime = shallowRef(false);
+	const useStartTimeRaw = shallowRef(false);
+	const useEndTimeRaw = shallowRef(false);
 	const startTime = shallowRef<Date>();
 	const endTime = shallowRef<Date>();
+
+	const useStartTime = computed(() => useStartTimeRaw.value || props.timeRequired);
+	const useEndTime = computed(() => useEndTimeRaw.value || props.timeRequired);
 
 	watch(useStartTime, v => {
 		if(!v) startTime.value = undefined;

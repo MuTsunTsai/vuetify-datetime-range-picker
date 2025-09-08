@@ -30,6 +30,8 @@ const meta: Meta<Component> = {
 		"min": { control: "date" },
 		"max": { control: "date" },
 		"modelValue": { control: "date" },
+		"rules": { control: "object" },
+		"validateOn": { control: "object" },
 	} as ArgTypes,
 };
 
@@ -49,5 +51,13 @@ export const minStory: Story = {
 	args: {
 		modelValue: undefined,
 		max: new Date(2025, 8, 20),
+	},
+};
+
+export const validateStory: Story = {
+	name: "Validation",
+	args: {
+		modelValue: undefined,
+		rules: [(v: any) => v ? true : "必填"],
 	},
 };

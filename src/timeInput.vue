@@ -1,17 +1,21 @@
 <template>
-	<v-mask-input v-click-outside="{ handler, include }" :disabled="disabled" :label="label" v-model="text"
-				  :focused="menu || isFocused" @update:focused="onFocus" mask="time" placeholder="hh:mm" @change="onChange"
-				  return-masked-value hide-details="auto" :suffix="suffix">
-		<v-menu v-model="menu" activator="parent" :close-on-content-click="false" :open-on-click="false">
-			<v-time-picker :max="toISO(max)" :min="toISO(min)" ref="picker" format="24hr" color="primary" hide-header
-						   :model-value="pickerTime()" @update:model-value="onPick" />
-		</v-menu>
-	</v-mask-input>
+	<div :style="{ '--input-offset': suffix ? (offset ?? '3.5em') : 'none' }">
+		<v-mask-input v-click-outside="{ handler, include }" :disabled="disabled" :label="label" v-model="text"
+					  :focused="menu || isFocused" @update:focused="onFocus" mask="time" placeholder="hh:mm" @change="onChange"
+					  return-masked-value hide-details="auto" :suffix="suffix" :rules="rules" :validate-on="validateOn">
+			<v-menu v-model="menu" activator="parent" :close-on-content-click="false" :open-on-click="false">
+				<v-time-picker :max="toISO(max)" :min="toISO(min)" ref="picker" format="24hr" color="primary" hide-header
+							   :model-value="pickerTime()" @update:model-value="onPick" />
+			</v-menu>
+		</v-mask-input>
+	</div>
 </template>
 
 <script setup lang="ts">
 	import { shallowRef, useTemplateRef, watch } from 'vue';
 	import { VMaskInput } from 'vuetify/labs/VMaskInput';
+
+	import type { RuleSetting, ValidateSetting } from './dateInput.vue';
 
 	const props = defineProps<{
 		label?: string;
@@ -19,6 +23,9 @@
 		min?: Date;
 		max?: Date;
 		suffix?: string;
+		offset?: string;
+		rules?: RuleSetting
+		validateOn?: ValidateSetting;
 		modelValue?: Date;
 	}>();
 	const emit = defineEmits(["update:modelValue"]);
@@ -86,6 +93,6 @@
 
 <style scoped>
 	:deep(.v-field__input) {
-		max-width: 4.5em;
+		max-width: calc(var(--v-field-padding-start, 0px) + var(--input-offset));
 	}
 </style>
